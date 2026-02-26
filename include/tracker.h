@@ -1,0 +1,8 @@
+//
+// Created by Mary K on 26.02.2026.
+//
+
+#ifndef HABITTRACKER_TRACKER_H
+#define HABITTRACKER_TRACKER_H
+
+#endif //HABITTRACKER_TRACKER_H

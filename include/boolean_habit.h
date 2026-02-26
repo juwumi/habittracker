@@ -1,0 +1,8 @@
+//
+// Created by Mary K on 27.02.2026.
+//
+
+#ifndef HABITTRACKER_BOOLEAN_HABIT_H
+#define HABITTRACKER_BOOLEAN_HABIT_H
+
+#endif //HABITTRACKER_BOOLEAN_HABIT_H

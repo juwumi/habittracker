@@ -1,0 +1,8 @@
+//
+// Created by Mary K on 27.02.2026.
+//
+
+#ifndef HABITTRACKER_NUMERIC_HABIT_H
+#define HABITTRACKER_NUMERIC_HABIT_H
+
+#endif //HABITTRACKER_NUMERIC_HABIT_H
