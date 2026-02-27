@@ -9,10 +9,7 @@ include_directories(include)
 
 add_executable(habit_tracker
         src/main.cpp
-        src/tracker.cpp
-        src/logmanager.cpp
-        include/tracker.h
-        include/numeric_habit.h
-        include/habit.h
-        include/boolean_habit.h
+        include/dailylog.h
+        src/dailylog.cpp
+        src/main.cpp
 )

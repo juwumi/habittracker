@@ -1,30 +1,48 @@
 #include <iostream>
 #include <memory>
-#include "tracker.h"
-#include "boolean_habit.h"
+#include "dailylog.h"
+
 int main() {
-    std::cout << "Test HabitTracker\n";
-    habittracker tracker;
+    std::cout << "Test DailyLog\n";
 
-    auto habit = std::make_unique<BooleanHabit>("Exercise");
-    std::cout << "Create a habit: Exercise\n";
+    auto log = std::make_unique<DailyLog>("2026-02-27");
+    std::cout << "Log created for date: " << log->getDate() << "\n";
 
-    tracker.addHabit(std::move(habit));
-    std::cout << "Add to tracker\n";
+    log->addEntry("habit1", true);
+    log->addEntry("habit2", 5000);
+    log->addEntry("habit3", false);
 
-    std::cout << "Quantity of habits: " << tracker.size() << "\n";
+    std::cout << "Entries added\n";
 
-    auto* found = tracker.findHabit("Exercise");
-    if (found) {
-        std::cout << "Found a habit: " << found->getName() << "\n";
+    std::cout << "Do we have habit1? " << (log->hasEntry("habit1") ? "yes" : "no") << "\n";
+    std::cout << "Do we have habit4? " << (log->hasEntry("habit4") ? "yes" : "no") << "\n";
+
+    auto entry1 = log->getEntry("habit1");
+    if (entry1.has_value()) {
+        std::cout << "habit1 = ";
+        std::visit([](const auto& v) { std::cout << v; }, entry1.value());
+        std::cout << "\n";
     }
 
-    bool marked = tracker.markHabitDone("Exercise", "2026-02-27");
-    std::cout << "Noted the completion: " << (marked ? "seccessefully" : "mistake") << "\n";
+    auto entry2 = log->getEntry("habit2");
+    if (entry2.has_value()) {
+        std::cout << "habit2 = ";
+        std::visit([](const auto& v) { std::cout << v; }, entry2.value());
+        std::cout << "\n";
+    }
 
-    bool removed = tracker.removeHabit("Exercise");
-    std::cout << "Removing a habit: " << (removed ? "seccessefully" : "mistake") << "\n";
-    std::cout << "Quantity after removal: " << tracker.size() << "\n";
+    std::string serialized = log->serialize();
+    std::cout << "Serialized string: " << serialized << "\n";
+
+    auto restoredLog = DailyLog::deserialize(serialized);
+    std::cout << "Log for the date has been restored: " << restoredLog->getDate() << "\n";
+
+    auto restoredEntry = restoredLog->getEntry("habit1");
+    if (restoredEntry.has_value()) {
+        std::cout << "Restored habit1 = ";
+        std::visit([](const auto& v) { std::cout << v; }, restoredEntry.value());
+        std::cout << "\n";
+    }
 
     return 0;
 }
