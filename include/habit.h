@@ -1,30 +1,28 @@
-#ifndef HABITTRACKER_HABIT_H
-#define HABITTRACKER_HABIT_H
+#indef HABIT_H
+#endif HABIT_H
 
 #include <string>
-#include <chrono>
+#include<vector>
 
-class Habit {
+class Habit{
 protected:
-    std::string id;
     std::string name;
-    std::chrono::system_clock::time_point createdDate;
-
+    int streak;
+    std::vector<bool> history;
 public:
-    Habit(const std::string& habitName) : name(habitName) {
-        createdDate = std::chrono::system_clock::now();
-        id = "temp_" + std::to_string(rand());
-    }
+    explicit Habit(std::string name);
+    virtual ~Habit();
+    virtual std::string getType() const = 0;
 
-    virtual ~Habit() = default;
-
-    virtual std::string getType() const { return "unknown"; }
-    virtual void markCompleted(const std::string& date) {
-        (void) date;
-    }
+    void markCompleted();
+    void updateStreak();
+    double completionRate() const;
 
     std::string getName() const { return name; }
-    std::string getId() const { return id; }
-};
+    int getStreak() const { return streak; }
+    const std::vector<bool>& getHistory() const { return history; }
 
-#endif //HABITTRACKER_HABIT_H
+    virtual std::string toString() const = 0;
+    virtual void print() const = 0;
+};
+#endif
