@@ -1,30 +1,60 @@
 #include <iostream>
 #include <memory>
-#include "tracker.h"
-#include "boolean_habit.h"
-int main() {
-    std::cout << "Test HabitTracker\n";
-    habittracker tracker;
+#include <vector>
+#include "dailylog.h"
+#include "storage.h"
 
-    auto habit = std::make_unique<BooleanHabit>("Exercise");
-    std::cout << "Create a habit: Exercise\n";
+void printLog(const DailyLog* log) {
+    if (!log) return;
 
-    tracker.addHabit(std::move(habit));
-    std::cout << "Add to tracker\n";
-
-    std::cout << "Quantity of habits: " << tracker.size() << "\n";
-
-    auto* found = tracker.findHabit("Exercise");
-    if (found) {
-        std::cout << "Found a habit: " << found->getName() << "\n";
+    std::cout << "Date: " << log->getDate() << "\n";
+    for (const auto& [habitId, value] : log->getAllEntries()) {
+        std::cout << "  " << habitId << " = ";
+        std::visit([](const auto& v) { std::cout << v; }, value);
+        std::cout << "\n";
     }
+}
 
-    bool marked = tracker.markHabitDone("Exercise", "2026-02-27");
-    std::cout << "Noted the completion: " << (marked ? "seccessefully" : "mistake") << "\n";
+int main() {
+    std::cout << "TEST STORAGE\n";
+    try {
+        std::vector<std::unique_ptr<DailyLog>> logs;
+        auto log1 = std::make_unique<DailyLog>("2026-02-27");
+        log1->addEntry("habit1", true);
+        log1->addEntry("habit2", 5000);
+        logs.push_back(std::move(log1));
 
-    bool removed = tracker.removeHabit("Exercise");
-    std::cout << "Removing a habit: " << (removed ? "seccessefully" : "mistake") << "\n";
-    std::cout << "Quantity after removal: " << tracker.size() << "\n";
+        auto log2 = std::make_unique<DailyLog>("2026-02-28");
+        log2->addEntry("habit1", false);
+        log2->addEntry("habit2", 7500);
+        logs.push_back(std::move(log2));
+
+        std::cout << "Created " << logs.size() << " logs\n";
+
+        Storage storage("test_logs.txt");
+        storage.saveLogs(logs);
+
+        auto loadedLogs = storage.loadLogs();
+
+        if (loadedLogs.has_value()) {
+            std::cout << "\nDown loaded " << loadedLogs->size() << " logs:\n";
+            for (const auto& log : loadedLogs.value()) {
+                printLog(log.get());
+            }
+        } else {
+            std::cout << "Fail does not find (first launch)\n";
+        }
+
+        Storage emptyStorage("non_existent_file.txt");
+        auto result = emptyStorage.loadLogs();
+        if (!result.has_value()) {
+            std::cout << "\nOK: Fail does not exist. Returned nullopt\n";
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
 
     return 0;
 }
