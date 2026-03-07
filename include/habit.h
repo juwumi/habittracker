@@ -12,15 +12,15 @@ public:
 
 };
 
-class Habit{
+class habit{
 protected:
     std::string name;
     int streak=0;
     int targetDaysPerWeek=7;
     std::vector<bool> history;
 public:
-    explicit Habit(const std::string& name, int targetDaysPerWeek=7);
-    virtual ~Habit()=default;
+    explicit habit(const std::string& name, int targetDaysPerWeek=7);
+    virtual ~habit()=default;
 
     virtual std::string getType() const = 0;
     virtual std::string toString() const=0;
