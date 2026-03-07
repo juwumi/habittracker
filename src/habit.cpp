@@ -2,7 +2,7 @@
 
 habit::habit(const std::string& name, int targetDaysPerWeek): name(name), targetDaysPerWeek(targetDaysPerWeek) {
     if (name.length() == 0) {
-        throw HabitException("Название привычки не может быть пустымy");
+        throw HabitException("Название привычки не может быть пустым");
     }
 }
 
