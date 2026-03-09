@@ -1,4 +1,5 @@
 #include "booleanHabit.h"
+#include <string>
 
 booleanHabit::booleanHabit(const std::string &name, int targetDaysPerWeek):habit(name, targetDaysPerWeek){}
 
@@ -7,10 +8,12 @@ std::string booleanHabit::getType() const {
 }
 std::string booleanHabit::toString() const {
     std::string last="the habit wasn't marked";
-    if (history.size() > 0) {
-        last=history.back()?"done":"not done";
+    if (getHistory().size() > 0) {
+        last=getHistory().back()?"done":"not done";
     }
-    return name + " | streak: " + std::to_string(streak) + " | last day: " + last;
+
+    std::string goalType= goal ? "(should do)" : "(should avoid)";
+    return getName() + " | streak: " + std::to_string(getStreak()) + " | last day: " + last;
 }
 
 

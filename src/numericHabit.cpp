@@ -1,7 +1,11 @@
 #include "numericHabit.h"
 
 numericHabit::numericHabit(const std::string &name, double goal, const std::string &unit, int targetDaysPerWeek)
-    : habit(name, targetDaysPerWeek), goal(goal), unit(unit){}
+    : habit(name, targetDaysPerWeek), goal(goal), unit(unit) {
+    if (goal<0) {
+        throw HabitException("Goal is negative");
+    }
+}
 
 std::string numericHabit::getType() const {
     return "numericHabit";
@@ -19,7 +23,7 @@ std::optional<double> numericHabit::getProgress() const {
 
 std::string numericHabit::toString() const {
     std::string status=isGoalReached()?"reached":"not reached";
-    return name+ "| goal: " + std::to_string(goal) + " " + unit + " | now: " + std::to_string(currentValue) + " " + unit + " |  " + status;
+    return getName()+ "| goal: " + std::to_string(goal) + " " + unit + " | now: " + std::to_string(currentValue) + " " + unit + " |  " + status;
 }
 
 

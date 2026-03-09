@@ -1,10 +1,13 @@
 #include "habit.h"
 
-int habit::idCounter=1;
+int habit::idCounter=0;
 
-habit::habit(const std::string& name, int targetDaysPerWeek): name(name), targetDaysPerWeek(targetDaysPerWeek) {
+habit::habit(const std::string& name, int targetDaysPerWeek): name(name), targetDaysPerWeek(targetDaysPerWeek), id(++idCounter) {
     if (name.length() == 0) {
-        throw HabitException("Название привычки не может быть пустым");
+        throw HabitException("Habit name can't be empty");
+    }
+    if (targetDaysPerWeek <= 0) {
+        throw HabitException("Habit target days must be greater than zero");
     }
 }
 
