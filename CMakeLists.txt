@@ -14,4 +14,6 @@ add_executable(habit_tracker
         src/main.cpp
         include/storage.h
         src/storage.cpp
+        include/logmanager.h
+        src/logmanager.cpp
 )
