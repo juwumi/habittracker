@@ -1,5 +1,7 @@
 #include "habit.h"
 
+int habit::idCounter=1;
+
 habit::habit(const std::string& name, int targetDaysPerWeek): name(name), targetDaysPerWeek(targetDaysPerWeek) {
     if (name.length() == 0) {
         throw HabitException("Название привычки не может быть пустым");
