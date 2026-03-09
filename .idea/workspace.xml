@@ -29,12 +29,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1378ba2-d062-4698-81ef-3fc2adbd561a" name="Changes" comment="add_cmake">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_26_02_2026,_16_58_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_26_02_2026__16_58__Changes_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/numericHabit.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/numericHabit.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/habittracker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/habittracker.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/habit.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/habit.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/booleanHabit.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/booleanHabit.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/habit.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/habit.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
