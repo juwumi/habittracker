@@ -18,6 +18,9 @@ protected:
     int streak=0;
     int targetDaysPerWeek=7;
     std::vector<bool> history;
+private:
+    int id;
+    static int idCounter;
 public:
     explicit habit(const std::string& name, int targetDaysPerWeek=7);
     virtual ~habit()=default;
@@ -32,6 +35,7 @@ public:
 
     std::string getName() const { return name; }
     int getStreak() const { return streak; }
+    int getId() const {return id;}
     const std::vector<bool>& getHistory() const { return history; }
     int getTargetDaysPerWeek() const { return targetDaysPerWeek; }
 };

@@ -6,10 +6,11 @@ std::string booleanHabit::getType() const {
     return "booleanHabit";
 }
 std::string booleanHabit::toString() const {
-    std::string last="не отмечено";
+    std::string last="Привычкм не была отмечена";
     if (history.size() > 0) {
-        last=history.back()?"выполнено":"не выполнено";
+        last=history.back()?"Выполнено":"Не выполнено";
     }
+    return name + " | Серия: " + std::to_string(streak) + " | Последний день: " + last;
 }
 
 
