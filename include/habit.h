@@ -13,12 +13,11 @@ public:
 };
 
 class habit{
-protected:
+private:
     std::string name;
     int streak=0;
     int targetDaysPerWeek=7;
     std::vector<bool> history;
-private:
     int id;
     static int idCounter;
 public:

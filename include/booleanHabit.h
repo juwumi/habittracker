@@ -10,12 +10,11 @@ public:
     explicit booleanHabit(const std::string& name, int targetDaysPerWeek=7);
     std::string getType() const override;
     std::string toString() const override;
+
+    bool getGoal() const {return goal;}
+    void setGoal(bool newGoal) {goal=newGoal;}
+
     static constexpr bool defaultGoal(){return true;}
 };
-
-
-
-
-
 
 #endif

@@ -15,6 +15,7 @@ public:
     std::string toString() const override;
 
     void setValue(double value);
+
     double getGoal() const {return goal;}
     double getCurrentValue() const {return currentValue;}
     bool isGoalReached() const {return currentValue>=goal;}
