@@ -4,6 +4,7 @@
 #include "Statistics.h"
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 
 HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
                            std::unique_ptr<LogManager> logManager,
@@ -21,33 +22,21 @@ void HabitTracker::createHabit(const std::string& name, HabitType type, int targ
 }
 
 bool HabitTracker::deleteHabit(int habitId) {
-    for (auto it = m_habits.begin(); it != m_habits.end(); ++it) {
-        if ((*it)->getId() == habitId) {
-            m_habits.erase(it);
-            return true;
-        }
-    }
+    std::cout << "Deleting habit: " << habitId << std::endl;
     return false;
 }
 
 std::optional<Habit*> HabitTracker::findHabit(int habitId) {
-    for (auto& habit : m_habits) {
-        if (habit->getId() == habitId) {
-            return habit.get();
-        }
-    }
-
+    return std::nullopt;
 }
 
 void HabitTracker::markHabitCompleted(int habitId, int value) {
     auto habitOpt = findHabit(habitId);
     if (!habitOpt.has_value()) {
-        std::cout << "Habit not found" << std::endl;
-        return;
+        throw std::runtime_error("Habit not found");
     }
     
-    Habit* habit = habitOpt.value();
-    std::cout << "Marking habit completed: " << habitId << std::endl;
+    std::cout << "Marking habit " << habitId << " as completed" << std::endl;
 }
 
 int HabitTracker::getCurrentStreak(int habitId) const {
