@@ -18,6 +18,7 @@ public:
 
     double getGoal() const {return goal;}
     double getCurrentValue() const {return currentValue;}
+    std::string getUnit() const {return unit;}
     bool isGoalReached() const {return currentValue>=goal;}
     std::optional<double> getProgress() const;
 };
