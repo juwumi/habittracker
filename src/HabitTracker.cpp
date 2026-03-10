@@ -1,13 +1,12 @@
 #include "HabitTracker.h"
-#include "Storage.h"
-#include "LogManager.h"
+#include "storage.h"
+#include "dailylog.h" 
 #include "Statistics.h"
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
-
 HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
-                           std::unique_ptr<LogManager> logManager,
+                           std::unique_ptr<DailyLog> logManager,
                            std::unique_ptr<Statistics> statistics)
     : m_storage(std::move(storage))
     , m_logManager(std::move(logManager))
@@ -52,5 +51,6 @@ void HabitTracker::loadData() {
 }
 
 void HabitTracker::saveData() const {
+
     std::cout << "Saving data..." << std::endl;
 }
