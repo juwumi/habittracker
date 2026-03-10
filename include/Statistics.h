@@ -2,9 +2,11 @@
 #define STATISTICS_H
 
 #include "Types.h"
-#include <vector>
 #include <map>
+#include <vector>
 #include <chrono>
+
+using LogMap = std::map<std::chrono::system_clock::time_point, std::vector<DailyProgress>>;
 
 class Statistics {
 public:
@@ -17,11 +19,9 @@ public:
         }
     }
     
-    int calculateStreak(int habitId, 
-        const std::map<std::chrono::system_clock::time_point, std::vector<DailyProgress>>& logs) const;
+    int calculateStreak(int habitId, const LogMap& logs) const;
     
-    double calculateCompletionRate(int habitId, int days,
-        const std::map<std::chrono::system_clock::time_point, std::vector<DailyProgress>>& logs) const;
+    double calculateCompletionRate(int habitId, int days, const LogMap& logs) const;
 };
 
 #endif
