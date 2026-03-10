@@ -7,6 +7,7 @@
 LogManager::LogManager(Storage& s) : storage(s) {
     load();
 }
+
 std::string LogManager::getTodayDate() const {
     auto now = std::chrono::system_clock::now();
     std::time_t tt = std::chrono::system_clock::to_time_t(now);
@@ -15,6 +16,7 @@ std::string LogManager::getTodayDate() const {
     ss << std::put_time(&tm, "%Y-%m-%d");
     return ss.str();
 }
+
 int LogManager::findLogIndex(const std::string& date) const {
     for (size_t i = 0; i < logs.size(); ++i) {
         if (logs[i]->getDate() == date) {
@@ -23,6 +25,7 @@ int LogManager::findLogIndex(const std::string& date) const {
     }
     return -1;
 }
+
 DailyLog* LogManager::getOrCreateLog(const std::string& date) {
     int index = findLogIndex(date);
     if (index != -1) {
@@ -37,19 +40,22 @@ DailyLog* LogManager::getOrCreateLog(const std::string& date) {
         });
     return ptr;
 }
-void LogManager::markDone(const std::string& habitId, std::variant<bool, int> value) {
+
+void LogManager::markDone(int habitId, std::variant<bool, int> value) {
     std::string today = getTodayDate();
     auto* log = getOrCreateLog(today);
     log->addEntry(habitId, value);
     save();
 }
-void LogManager::markDoneForDate(const std::string& habitId,
+
+void LogManager::markDoneForDate(int habitId,
                                   const std::string& date,
                                   std::variant<bool, int> value) {
     auto* log = getOrCreateLog(date);
     log->addEntry(habitId, value);
     save();
 }
+
 std::optional<DailyLog*> LogManager::getLog(const std::string& date) {
     int index = findLogIndex(date);
     if (index != -1) {
@@ -57,13 +63,14 @@ std::optional<DailyLog*> LogManager::getLog(const std::string& date) {
     }
     return std::nullopt;
 }
-std::optional<std::variant<bool, int>> LogManager::getTodayValue(
-    const std::string& habitId) const {
+
+std::optional<std::variant<bool, int>> LogManager::getTodayValue(int habitId) const {
     std::string today = getTodayDate();
     return getValueForDate(habitId, today);
 }
+
 std::optional<std::variant<bool, int>> LogManager::getValueForDate(
-    const std::string& habitId,
+    int habitId,
     const std::string& date) const {
     int index = findLogIndex(date);
     if (index != -1) {
@@ -71,6 +78,7 @@ std::optional<std::variant<bool, int>> LogManager::getValueForDate(
     }
     return std::nullopt;
 }
+
 std::vector<DailyLog*> LogManager::getLogsInRange(const std::string& start,
                                                    const std::string& end) {
     std::vector<DailyLog*> result;
@@ -81,7 +89,8 @@ std::vector<DailyLog*> LogManager::getLogsInRange(const std::string& start,
     }
     return result;
 }
-bool LogManager::isHabitDoneToday(const std::string& habitId) const {
+
+bool LogManager::isHabitDoneToday(int habitId) const {
     auto value = getTodayValue(habitId);
     if (value.has_value()) {
         if (std::holds_alternative<bool>(value.value())) {
@@ -90,7 +99,8 @@ bool LogManager::isHabitDoneToday(const std::string& habitId) const {
     }
     return false;
 }
-int LogManager::countCompletionsInRange(const std::string& habitId,
+
+int LogManager::countCompletionsInRange(int habitId,
                                          const std::string& start,
                                          const std::string& end) const {
     int count = 0;
@@ -106,15 +116,18 @@ int LogManager::countCompletionsInRange(const std::string& habitId,
     }
     return count;
 }
+
 void LogManager::save() {
     storage.saveLogs(logs);
 }
+
 void LogManager::load() {
     auto loaded = storage.loadLogs();
     if (loaded.has_value()) {
         logs = std::move(loaded.value());
     }
 }
+
 void LogManager::clear() {
     logs.clear();
     save();

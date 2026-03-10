@@ -13,30 +13,24 @@ class LogManager {
 private:
     std::vector<std::unique_ptr<DailyLog>> logs;
     Storage& storage;
-    std::string getTodayDate() const;
     int findLogIndex(const std::string& date) const;
     DailyLog* getOrCreateLog(const std::string& date);
+
 public:
     explicit LogManager(Storage& s);
-    void markDone(const std::string& habitId, std::variant<bool, int> value);
-    void markDoneForDate(const std::string& habitId,
-                         const std::string& date,
-                         std::variant<bool, int> value);
+    std::string getTodayDate() const;
+    void markDone(int habitId, std::variant<bool, int> value);
+    void markDoneForDate(int habitId, const std::string& date, std::variant<bool, int> value);
+    std::optional<std::variant<bool, int>> getTodayValue(int habitId) const;
+    std::optional<std::variant<bool, int>> getValueForDate(int habitId, const std::string& date) const;
+    bool isHabitDoneToday(int habitId) const;
+    int countCompletionsInRange(int habitId, const std::string& start, const std::string& end) const;
     std::optional<DailyLog*> getLog(const std::string& date);
-    std::optional<std::variant<bool, int>> getTodayValue(const std::string& habitId) const;
-    std::optional<std::variant<bool, int>> getValueForDate(
-        const std::string& habitId,
-        const std::string& date) const;
-    std::vector<DailyLog*> getLogsInRange(const std::string& start,
-                                           const std::string& end);
-    bool isHabitDoneToday(const std::string& habitId) const;
-    int countCompletionsInRange(const std::string& habitId,
-                                 const std::string& start,
-                                 const std::string& end) const;
+    std::vector<DailyLog*> getLogsInRange(const std::string& start, const std::string& end);
     void save();
     void load();
     const std::vector<std::unique_ptr<DailyLog>>& getAllLogs() const { return logs; }
     void clear();
 };
 
-#endif //HABITTRACKER_LOGMANAGER_H
+#endif

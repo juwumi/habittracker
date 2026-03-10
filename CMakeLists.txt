@@ -21,6 +21,7 @@ include(FetchContent)
 FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
@@ -31,6 +32,9 @@ add_executable(tests
         src/habit.cpp
         src/booleanHabit.cpp
         src/numericHabit.cpp
+        src/dailylog.cpp
+        src/storage.cpp
+        src/logmanager.cpp
 )
 
 target_link_libraries(tests
