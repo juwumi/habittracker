@@ -11,24 +11,20 @@
 class DailyLog {
 private:
     std::string date;
-    std::map<std::string, std::variant<bool, int>> entries;
+    std::map<int, std::variant<bool, int>> entries;
 
 public:
     explicit DailyLog(const std::string& logDate);
 
-    void addEntry(const std::string& habitId, std::variant<bool, int> value);
-
-    std::optional<std::variant<bool, int>> getEntry(const std::string& habitId) const;
-
-    bool hasEntry(const std::string& habitId) const;
+    void addEntry(int habitId, std::variant<bool, int> value);
+    std::optional<std::variant<bool, int>> getEntry(int habitId) const;
+    bool hasEntry(int habitId) const;
 
     std::string getDate() const;
-
-    const std::map<std::string, std::variant<bool, int>>& getAllEntries() const;
+    const std::map<int, std::variant<bool, int>>& getAllEntries() const;
 
     std::string serialize() const;
-
     static std::unique_ptr<DailyLog> deserialize(const std::string& data);
 };
 
-#endif //HABITTRACKER_DAILYLOG_H
+#endif

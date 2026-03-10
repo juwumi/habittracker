@@ -14,4 +14,34 @@ add_executable(habit_tracker
         src/main.cpp
         include/storage.h
         src/storage.cpp
+        include/logmanager.h
+        src/logmanager.cpp
 )
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+
+add_executable(tests
+        tests/tests.cpp
+        src/habit.cpp
+        src/booleanHabit.cpp
+        src/numericHabit.cpp
+        src/dailylog.cpp
+        src/storage.cpp
+        src/logmanager.cpp
+)
+
+target_link_libraries(tests
+        GTest::gtest_main
+)
+
+target_include_directories(tests PRIVATE include)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
