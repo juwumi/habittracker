@@ -1,56 +1,46 @@
-#include "HabitTracker.h"
-#include "Storage.h"
-#include "LogManager.h"
-#include "Statistics.h"
-#include <algorithm>
-#include <iostream>
-#include <stdexcept>
+#ifndef HABITTRACKER_H
+#define HABITTRACKER_H
 
-HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
-                           std::unique_ptr<LogManager> logManager,
-                           std::unique_ptr<Statistics> statistics)
-    : m_storage(std::move(storage))
-    , m_logManager(std::move(logManager))
-    , m_statistics(std::move(statistics)) {
-    std::cout << "HabitTracker created" << std::endl;
-}
+#include "Types.h"
+#include <memory>
+#include <vector>
+#include <string>
+#include <optional>
 
-HabitTracker::~HabitTracker() = default;
+class Habit;
+class LogManager;
+class Storage;
+class Statistics;
 
-void HabitTracker::createHabit(const std::string& name, HabitType type, int target) {
-    std::cout << "Creating habit: " << name << std::endl;
-}
-
-bool HabitTracker::deleteHabit(int habitId) {
-    std::cout << "Deleting habit: " << habitId << std::endl;
-    return false;
-}
-
-std::optional<Habit*> HabitTracker::findHabit(int habitId) {
-    return std::nullopt;
-}
-
-void HabitTracker::markHabitCompleted(int habitId, int value) {
-    auto habitOpt = findHabit(habitId);
-    if (!habitOpt.has_value()) {
-        throw std::runtime_error("Habit not found");
-    }
+class HabitTracker {
+public:
+    HabitTracker(std::unique_ptr<Storage> storage, 
+                 std::unique_ptr<LogManager> logManager,
+                 std::unique_ptr<Statistics> statistics);
     
-    std::cout << "Marking habit " << habitId << " as completed" << std::endl;
-}
+    ~HabitTracker();
 
-int HabitTracker::getCurrentStreak(int habitId) const {
-    return 0;
-}
+    HabitTracker(const HabitTracker&) = delete;
+    HabitTracker& operator=(const HabitTracker&) = delete;
+    HabitTracker(HabitTracker&&) = default;
+    HabitTracker& operator=(HabitTracker&&) = default;
 
-double HabitTracker::getCompletionRate(int habitId, int days) const {
-    return 0.0;
-}
+    void createHabit(const std::string& name, HabitType type, int target = 1);
+    bool deleteHabit(int habitId);
+    std::optional<Habit*> findHabit(int habitId);
+    void markHabitCompleted(int habitId, int value = 1);
+    
+    int getCurrentStreak(int habitId) const;
+    double getCompletionRate(int habitId, int days) const;
+    
+    void loadData();
+    void saveData() const;
 
-void HabitTracker::loadData() {
-    std::cout << "Loading data..." << std::endl;
-}
+private:
+    std::unique_ptr<Storage> m_storage;
+    std::unique_ptr<LogManager> m_logManager;
+    std::unique_ptr<Statistics> m_statistics;
+    std::vector<std::unique_ptr<Habit>> m_habits;
+};
 
-void HabitTracker::saveData() const {
-    std::cout << "Saving data..." << std::endl;
-}
+#endif
