@@ -8,14 +8,14 @@
 #include <optional>
 
 class Habit;
-class LogManager;
 class Storage;
+class DailyLog;
 class Statistics;
 
 class HabitTracker {
 public:
     HabitTracker(std::unique_ptr<Storage> storage, 
-                 std::unique_ptr<LogManager> logManager,
+                 std::unique_ptr<DailyLog> logManager,
                  std::unique_ptr<Statistics> statistics);
     
     ~HabitTracker();
@@ -38,7 +38,7 @@ public:
 
 private:
     std::unique_ptr<Storage> m_storage;
-    std::unique_ptr<LogManager> m_logManager;
+    std::unique_ptr<DailyLog> m_logManager;
     std::unique_ptr<Statistics> m_statistics;
     std::vector<std::unique_ptr<Habit>> m_habits;
 };
