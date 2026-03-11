@@ -214,7 +214,7 @@ TEST_F(StorageTest, SaveEmptyLogs) {
     EXPECT_TRUE(loaded->empty());
 }
 
-//тесты для numericHabit logmanager
+//тесты для logmanager
 
 class LogManagerTest : public ::testing::Test {
 protected:
