@@ -7,7 +7,7 @@
 #include "../include/storage.h"
 #include "../include/logmanager.h"
 
-// тесты для habit (БЕЗ ИЗМЕНЕНИЙ)
+// тесты для habit
 TEST(HabitTest, UniqueID) {
     booleanHabit habit1("1st");
     booleanHabit habit2("2nd");
@@ -24,7 +24,7 @@ TEST(HabitTest,InvalidTargetDaysNotWorks) {
     EXPECT_THROW(booleanHabit habit("test",-1), HabitException);
 }
 
-//тесты для booleanHabit (БЕЗ ИЗМЕНЕНИЙ)
+//тесты для booleanHabit
 TEST(BooleanHabitTest, Creation) {
     booleanHabit habit("Reading", 3);
 
@@ -53,7 +53,7 @@ TEST(BooleanHabitTest, GoalSetter) {
     EXPECT_FALSE(habit.getGoal());
 }
 
-//тесты для numericHabit (БЕЗ ИЗМЕНЕНИЙ)
+//тесты для numericHabit
 TEST(NumericHabitTest,Creation) {
     numericHabit habit("Number of steps",8000,"steps",7 );
 
@@ -83,8 +83,7 @@ TEST(NumericHabitTest, ZeroGoal) {
     EXPECT_FALSE(habit.getProgress().has_value());
 }
 
-// ========== ТЕСТЫ ДЛЯ DAILYLOG ==========
-// ИСПРАВЛЕНО: habitId теперь int
+//тесты для dailylog
 
 TEST(DailyLogTest, Constructor) {
     DailyLog log("2026-03-10");
@@ -94,7 +93,7 @@ TEST(DailyLogTest, Constructor) {
 TEST(DailyLogTest, AddAndGetBooleanEntry) {
     DailyLog log("2026-03-10");
 
-    log.addEntry(1, true);  // int ID
+    log.addEntry(1, true);
 
     auto entry = log.getEntry(1);
     ASSERT_TRUE(entry.has_value());
@@ -105,7 +104,7 @@ TEST(DailyLogTest, AddAndGetBooleanEntry) {
 TEST(DailyLogTest, AddAndGetNumericEntry) {
     DailyLog log("2026-03-10");
 
-    log.addEntry(2, 5000);  // int ID
+    log.addEntry(2, 5000);
 
     auto entry = log.getEntry(2);
     ASSERT_TRUE(entry.has_value());
@@ -116,7 +115,7 @@ TEST(DailyLogTest, AddAndGetNumericEntry) {
 TEST(DailyLogTest, GetNonexistentEntry) {
     DailyLog log("2026-03-10");
 
-    auto entry = log.getEntry(999);  // несуществующий ID
+    auto entry = log.getEntry(999);
     EXPECT_FALSE(entry.has_value());
 }
 
@@ -161,8 +160,7 @@ TEST(DailyLogTest, SerializeDeserialize) {
     EXPECT_EQ(std::get<int>(entry2.value()), 5000);
 }
 
-// ========== ТЕСТЫ ДЛЯ STORAGE ==========
-// ИСПРАВЛЕНО: habitId теперь int
+//тесты для storage
 
 class StorageTest : public ::testing::Test {
 protected:
@@ -181,11 +179,11 @@ TEST_F(StorageTest, SaveAndLoadLogs) {
     std::vector<std::unique_ptr<DailyLog>> logs;
 
     auto log1 = std::make_unique<DailyLog>("2026-03-10");
-    log1->addEntry(1, true);  // int ID
+    log1->addEntry(1, true);
     logs.push_back(std::move(log1));
 
     auto log2 = std::make_unique<DailyLog>("2026-03-11");
-    log2->addEntry(2, 5000);  // int ID
+    log2->addEntry(2, 5000);
     logs.push_back(std::move(log2));
 
     EXPECT_NO_THROW(storage.saveLogs(logs));
@@ -216,8 +214,7 @@ TEST_F(StorageTest, SaveEmptyLogs) {
     EXPECT_TRUE(loaded->empty());
 }
 
-// ========== ТЕСТЫ ДЛЯ LOGMANAGER ==========
-// ИСПРАВЛЕНО: habitId теперь int
+//тесты для numericHabit logmanager
 
 class LogManagerTest : public ::testing::Test {
 protected:
@@ -236,7 +233,7 @@ protected:
 };
 
 TEST_F(LogManagerTest, MarkDoneToday) {
-    logManager->markDone(1, true);  // int ID
+    logManager->markDone(1, true);
 
     auto value = logManager->getTodayValue(1);
     ASSERT_TRUE(value.has_value());
@@ -245,7 +242,7 @@ TEST_F(LogManagerTest, MarkDoneToday) {
 }
 
 TEST_F(LogManagerTest, MarkDoneForDate) {
-    logManager->markDoneForDate(1, "2026-03-09", 5000);  // int ID
+    logManager->markDoneForDate(1, "2026-03-09", 5000); 
 
     auto value = logManager->getValueForDate(1, "2026-03-09");
     ASSERT_TRUE(value.has_value());
