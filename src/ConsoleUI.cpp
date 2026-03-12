@@ -118,7 +118,7 @@ void ConsoleUI::createHabitScreen() {
 
     std::string name;
     int typeChoice;
-    int target = 1;
+    double target = 1;
     std::string unit;
 
     std::cout << "Enter habit name: ";
@@ -173,7 +173,9 @@ void ConsoleUI::createHabitScreen() {
     std::cin.get();
 }
 void ConsoleUI::markHabitScreen() {
-    std::cout << "\n    Mark Habit Completed    \n";
+    std::cout << "\n------------------------\n";
+    std::cout << "    MARK HABIT COMPLETED     \n";
+    std::cout << "------------------------\n";
 
     int habitId;
     int value = 1;
