@@ -9,6 +9,7 @@
 #include "habit.h"
 #include "booleanHabit.h"
 #include "numericHabit.h"
+
 HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
                            std::unique_ptr<DailyLog> logManager,
                            std::unique_ptr<Statistics> statistics)
@@ -20,8 +21,20 @@ HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
 
 HabitTracker::~HabitTracker() = default;
 
-void HabitTracker::createHabit(const std::string& name, HabitType type, int target) {
+void HabitTracker::createHabit(const std::string& name, HabitType type, int target, const std::string& unit) {
     std::cout << "Creating habit: " << name << std::endl;
+
+    std::unique_ptr<habit> newHabit;
+
+    if (type == HabitType::Boolean) {
+        newHabit = std::make_unique<booleanHabit>(name);
+    } else {
+        newHabit = std::make_unique<numericHabit>(name, target, unit);
+    }
+
+    m_habits.push_back(std::move(newHabit));
+
+    std::cout << "Habit saved in memory! Total habits: " << m_habits.size() << std::endl;
 }
 
 bool HabitTracker::deleteHabit(int habitId) {
@@ -30,6 +43,11 @@ bool HabitTracker::deleteHabit(int habitId) {
 }
 
 std::optional<habit*> HabitTracker::findHabit(int habitId) {
+    for (auto& habit : m_habits) {
+        if (habit->getId() == habitId) {
+            return habit.get();
+        }
+    }
     return std::nullopt;
 }
 
@@ -38,15 +56,38 @@ void HabitTracker::markHabitCompleted(int habitId, int value) {
     if (!habitOpt.has_value()) {
         throw std::runtime_error("Habit not found");
     }
+
+    habit* h = habitOpt.value();
+
+    if (h->getType() == "numericHabit") {
+        numericHabit* numHabit = dynamic_cast<numericHabit*>(h);
+        if (numHabit) {
+            numHabit->setValue(value);
+        }
+    } else {
+        bool done = (value == 1);
+        h->markCompleted(done);
+    }
+
     m_statistics->incrementCounter();
-    std::cout << "Marking habit " << habitId << " as completed" << std::endl;
+    std::cout << "Progress recorded" << std::endl;
 }
 
 int HabitTracker::getCurrentStreak(int habitId) const {
+    for (const auto& habit : m_habits) {
+        if (habit->getId() == habitId) {
+            return habit->getStreak();
+        }
+    }
     return 0;
 }
 
 double HabitTracker::getCompletionRate(int habitId, int days) const {
+    for (const auto& habit : m_habits) {
+        if (habit->getId() == habitId) {
+            return habit->completionRate() * 100;
+        }
+    }
     return 0.0;
 }
 
