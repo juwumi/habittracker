@@ -17,10 +17,6 @@ int main() {
     
     try {
         auto storage = std::make_unique<Storage>("habits_data.txt");
-        
-        auto logManager = std::make_unique<DailyLog>("2026-03-12");
-
-        auto statistics = std::make_unique<Statistics>();
 
         auto logManager = std::make_unique<DailyLog>("2026-03-12");
 
