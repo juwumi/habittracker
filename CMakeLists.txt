@@ -16,6 +16,7 @@ add_executable(habit_tracker
         src/storage.cpp
         include/logmanager.h
         src/logmanager.cpp
+        src/main.cpp
 )
 include(FetchContent)
 FetchContent_Declare(
