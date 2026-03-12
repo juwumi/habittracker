@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
+#include <memory>
 HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
                            std::unique_ptr<DailyLog> logManager,
                            std::unique_ptr<Statistics> statistics)
@@ -34,7 +35,7 @@ void HabitTracker::markHabitCompleted(int habitId, int value) {
     if (!habitOpt.has_value()) {
         throw std::runtime_error("Habit not found");
     }
-    
+    m_statistics->incrementCounter();
     std::cout << "Marking habit " << habitId << " as completed" << std::endl;
 }
 

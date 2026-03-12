@@ -5,12 +5,11 @@
 #include <map>
 #include <vector>
 #include <chrono>
-
-using LogMap = std::map<std::chrono::system_clock::time_point, std::vector<DailyProgress>>;
+#include <memory>
 
 class Statistics {
 public:
-    Statistics() = default;
+    Statistics();
     
     constexpr static double getWeight(char channel) {
         switch(channel) {
@@ -19,9 +18,16 @@ public:
         }
     }
     
-    int calculateStreak(int habitId, const LogMap& logs) const;
+    int calculateStreak(int habitId, 
+        const std::map<std::chrono::system_clock::time_point, std::vector<DailyProgress>>& logs) const;
     
-    double calculateCompletionRate(int habitId, int days, const LogMap& logs) const;
+    double calculateCompletionRate(int habitId, int days, 
+        const std::map<std::chrono::system_clock::time_point, std::vector<DailyProgress>>& logs) const;
+    
+    void incrementCounter();
+
+private:
+    std::shared_ptr<int> counter;
 };
 
 #endif

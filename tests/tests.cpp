@@ -6,6 +6,13 @@
 #include "../include/dailylog.h"
 #include "../include/storage.h"
 #include "../include/logmanager.h"
+#include "Statistics.h"
+#include <chrono>
+#include <map>
+#include <vector>
+#include "HabitTracker.h"
+#include "storage.h"
+#include "dailylog.h"
 
 // тесты для habit (БЕЗ ИЗМЕНЕНИЙ)
 TEST(HabitTest, UniqueID) {
@@ -326,4 +333,121 @@ TEST_F(LogManagerTest, GetAllLogs) {
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc,argv);
     return RUN_ALL_TESTS();
+}
+
+// ТЕСТЫ ДЛЯ STATISTICS
+
+#include "Statistics.h"
+#include <chrono>
+#include <map>
+#include <vector>
+
+using namespace std::chrono;
+
+TEST(StatisticsTest, Constructor_InitializesCounter) {
+    Statistics stats;
+    SUCCEED();
+}
+
+TEST(StatisticsTest, IncrementCounter_MultipleCalls_Works) {
+    Statistics stats;
+    
+    stats.incrementCounter();
+    stats.incrementCounter();
+    stats.incrementCounter();
+    
+    SUCCEED();
+}
+
+TEST(StatisticsTest, CalculateStreak_EmptyLogs_ReturnsZero) {
+    Statistics stats;
+    std::map<system_clock::time_point, std::vector<DailyProgress>> logs;
+    
+    int streak = stats.calculateStreak(1, logs);
+    
+    EXPECT_EQ(streak, 0);
+}
+
+TEST(StatisticsTest, CalculateCompletionRate_EmptyLogs_ReturnsZero) {
+    Statistics stats;
+    std::map<system_clock::time_point, std::vector<DailyProgress>> logs;
+    
+    double rate = stats.calculateCompletionRate(1, 7, logs);
+    
+    EXPECT_EQ(rate, 0.0);
+}
+
+TEST(StatisticsTest, GetWeight_ReturnsCorrectValue) {
+    EXPECT_EQ(Statistics::getWeight('D'), 1.0);
+    EXPECT_EQ(Statistics::getWeight('X'), 0.0);
+}
+
+
+// ТЕСТЫ ДЛЯ HABITTRACKER
+
+#include "HabitTracker.h"
+#include "storage.h"
+#include "dailylog.h"
+
+class HabitTrackerTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        storage = std::make_unique<Storage>("test_habits.txt");
+        logManager = std::make_unique<DailyLog>();
+        statistics = std::make_unique<Statistics>();
+        
+        tracker = std::make_unique<HabitTracker>(
+            std::move(storage),
+            std::move(logManager),
+            std::move(statistics)
+        );
+    }
+    
+    void TearDown() override {
+        std::filesystem::remove("test_habits.txt");
+    }
+    
+    std::unique_ptr<Storage> storage;
+    std::unique_ptr<DailyLog> logManager;
+    std::unique_ptr<Statistics> statistics;
+    std::unique_ptr<HabitTracker> tracker;
+};
+
+TEST_F(HabitTrackerTest, CreateHabit_ValidData_NoThrow) {
+    EXPECT_NO_THROW({
+        tracker->createHabit("Test Habit", HabitType::Boolean, 1);
+    });
+}
+
+TEST_F(HabitTrackerTest, FindHabit_NonExistentId_ReturnsNullopt) {
+    auto result = tracker->findHabit(999);
+    EXPECT_FALSE(result.has_value());
+}
+
+TEST_F(HabitTrackerTest, MarkCompleted_NonExistentHabit_ThrowsException) {
+    EXPECT_THROW({
+        tracker->markHabitCompleted(999, 1);
+    }, std::runtime_error);
+}
+
+TEST_F(HabitTrackerTest, GetCurrentStreak_ReturnsNumber) {
+    int streak = tracker->getCurrentStreak(1);
+    EXPECT_EQ(streak, 0);
+}
+
+TEST_F(HabitTrackerTest, GetCompletionRate_ReturnsNumber) {
+    double rate = tracker->getCompletionRate(1, 7);
+    EXPECT_EQ(rate, 0.0);
+}
+
+TEST_F(HabitTrackerTest, LoadData_NoThrow) {
+    EXPECT_NO_THROW({
+        tracker->loadData();
+    });
+}
+
+TEST_F(HabitTrackerTest, SaveData_NoThrow) {
+    EXPECT_NO_THROW({
+        tracker->saveData();
+    });
 }
