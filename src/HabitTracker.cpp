@@ -96,4 +96,3 @@ void HabitTracker::loadData() {
 
 void HabitTracker::saveData() const {
 }
-

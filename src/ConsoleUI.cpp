@@ -168,6 +168,7 @@ void ConsoleUI::createHabitScreen() {
         std::cout << "Error: " << e.what() << "\n";
     }
 
+    std::cout <<"\nCheck ID of your new habit in the section 'Show all habits' \n";
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
