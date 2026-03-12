@@ -74,6 +74,9 @@
     &quot;accountId&quot;: &quot;fda277b8-9154-4fbf-8722-818cdb90196c&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
     <option name="majorVersion" value="2025" />
