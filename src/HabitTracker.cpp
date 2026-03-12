@@ -51,10 +51,7 @@ double HabitTracker::getCompletionRate(int habitId, int days) const {
 }
 
 void HabitTracker::loadData() {
-    std::cout << "Loading data..." << std::endl;
 }
 
 void HabitTracker::saveData() const {
-
-    std::cout << "Saving data..." << std::endl;
 }

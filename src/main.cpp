@@ -16,25 +16,17 @@ int main() {
     std::cout << "\n";
     
     try {
-        std::cout << "Initializing storage...\n";
         auto storage = std::make_unique<Storage>("habits_data.txt");
-        
-        std::cout << "Initializing daily logs...\n";
         auto logManager = std::make_unique<DailyLog>("2026-03-12");
-        
-        std::cout << "Initializing statistics...\n";
         auto statistics = std::make_unique<Statistics>();
-        
-        std::cout << "Initializing habit tracker...\n";
         auto tracker = std::make_unique<HabitTracker>(
             std::move(storage),
             std::move(logManager),
             std::move(statistics)
         );
-        
         std::cout << "All components loaded successfully!\n";
         std::cout << "\n";
-        std::cout << "   Starting Habit Tracker...        \n";
+        std::cout << "   Starting Habit Tracker        \n";
         std::cout << "\n";
         
         ConsoleUI ui(std::move(tracker));

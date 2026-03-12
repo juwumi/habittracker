@@ -10,7 +10,6 @@ ConsoleUI::ConsoleUI(std::unique_ptr<HabitTracker> tracker)
 }
 
 void ConsoleUI::run() {
-    std::cout << "Habit Tracker\n";
     m_tracker->loadData();
     
     while (m_isRunning) {
@@ -38,7 +37,6 @@ void ConsoleUI::run() {
     }
     
     m_tracker->saveData();
-    std::cout << "Goodbye!\n";
 }
 
 void ConsoleUI::showMainMenu() {
@@ -76,7 +74,7 @@ void ConsoleUI::displayAllHabits() {
 }
 
 void ConsoleUI::createHabitScreen() {
-    std::cout << "\n=== Create New Habit ===\n";
+    std::cout << "\n    Create New Habit   \n";
     
     std::string name;
     int typeChoice;
@@ -110,7 +108,7 @@ void ConsoleUI::createHabitScreen() {
 }
 
 void ConsoleUI::markHabitScreen() {
-    std::cout << "\n=== Mark Habit Completed ===\n";
+    std::cout << "\n    Mark Habit Completed    \n";
     
     int habitId;
     int value = 1;
@@ -134,7 +132,7 @@ void ConsoleUI::markHabitScreen() {
 }
 
 void ConsoleUI::showStatisticsScreen() {
-    std::cout << "\n=== Statistics ===\n";
+    std::cout << "\n    Statistics    \n";
     
     int habitId;
     std::cout << "Enter habit ID: ";
