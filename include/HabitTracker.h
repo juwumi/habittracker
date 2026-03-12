@@ -2,7 +2,6 @@
 #define HABITTRACKER_H
 
 #include "Types.h"
-#include "Types.h"
 #include "habit.h"
 #include "booleanHabit.h"
 #include "numericHabit.h"
@@ -14,13 +13,12 @@
 #include <string>
 #include <optional>
 
-
 class HabitTracker {
 public:
-    HabitTracker(std::unique_ptr<Storage> storage, 
+    HabitTracker(std::unique_ptr<Storage> storage,
                  std::unique_ptr<DailyLog> logManager,
                  std::unique_ptr<Statistics> statistics);
-    
+
     ~HabitTracker();
 
     HabitTracker(const HabitTracker&) = delete;
@@ -28,16 +26,20 @@ public:
     HabitTracker(HabitTracker&&) = default;
     HabitTracker& operator=(HabitTracker&&) = default;
 
-    void createHabit(const std::string& name, HabitType type, int target = 1);
+    void createHabit(const std::string& name, HabitType type, int target = 1,
+                     const std::string& unit = "");
+
     bool deleteHabit(int habitId);
     std::optional<habit*> findHabit(int habitId);
     void markHabitCompleted(int habitId, int value = 1);
-    
+
     int getCurrentStreak(int habitId) const;
     double getCompletionRate(int habitId, int days) const;
-    
+
     void loadData();
     void saveData() const;
+
+    const std::vector<std::unique_ptr<habit>>& getHabits() const { return m_habits; }
 
 private:
     std::unique_ptr<Storage> m_storage;

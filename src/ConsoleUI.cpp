@@ -10,25 +10,24 @@ ConsoleUI::ConsoleUI(std::unique_ptr<HabitTracker> tracker)
 }
 
 void ConsoleUI::run() {
-    std::cout << "Habit Tracker\n";
     m_tracker->loadData();
-    
+
     while (m_isRunning) {
         try {
             showMainMenu();
-            
+
             int choice;
             std::cin >> choice;
-            
+
             if (std::cin.fail()) {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "Invalid input. Please enter a number.\n";
+                std::cout << "Invalid input, enter a number.\n";
                 continue;
             }
-            
+
             handleUserInput(choice);
-            
+
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << "\n";
             std::cout << "Press Enter to continue...";
@@ -36,9 +35,8 @@ void ConsoleUI::run() {
             std::cin.get();
         }
     }
-    
+
     m_tracker->saveData();
-    std::cout << "Goodbye!\n";
 }
 
 void ConsoleUI::showMainMenu() {
@@ -59,96 +57,197 @@ void ConsoleUI::handleUserInput(int choice) {
         case 3: markHabitScreen(); break;
         case 4: showStatisticsScreen(); break;
         case 5: m_isRunning = false; break;
-        default: std::cout << "Invalid choice. Please try again.\n";
+        default: std::cout << "Invalid choice. Try again.\n";
     }
 }
 
 void ConsoleUI::displayAllHabits() {
-    std::cout << "\n   All Habits   \n";
-    
-    std::cout << "1. Drink water [Boolean] - Streak: 5 days\n";
-    std::cout << "2. Running [Numeric] - 3/7 km\n";
-    std::cout << "3. Read book [Boolean] - Streak: 2 days\n";
-    
+    std::cout << "\n------------------------\n";
+    std::cout << "    ALL YOUR HABITS     \n";
+    std::cout << "------------------------\n";
+
+    auto& habits = m_tracker->getHabits();
+
+    if (habits.empty()) {
+        std::cout << "No habits yet. Create one!\n";
+    } else {
+        for (const auto& habit : habits) {
+            std::cout << "ID: " << habit->getId() << "\n";
+            std::cout << "  Name: " << habit->getName() << "\n";
+            std::cout << "  Type: " << habit->getType() << "\n";
+            std::cout << "  Streak: " << habit->getStreak() << " days\n";
+
+            if (habit->getType() == "numericHabit") {
+                numericHabit* numHabit = dynamic_cast<numericHabit*>(habit.get());
+                if (numHabit) {
+                    auto progress = numHabit->getProgress();
+                    if (progress.has_value()) {
+                        std::cout << "  Progress: " << std::fixed << std::setprecision(1)
+                                  << progress.value() << "%\n";
+                    }
+                    std::cout << "  Current: " << numHabit->getCurrentValue()
+                              << " " << numHabit->getUnit() << "\n";
+                    std::cout << "  Goal: " << numHabit->getGoal()
+                              << " " << numHabit->getUnit() << "\n";
+                }
+            }
+
+            auto last = habit->getLastEntry();
+            if (last.has_value()) {
+                std::cout << "  Last: " << (last.value() ? "done" : "not done") << "\n";
+            } else {
+                std::cout << "  Last: not marked yet\n";
+            }
+
+            double rate = habit->completionRate() * 100;
+            std::cout << "  Overall: " << std::fixed << std::setprecision(1) << rate << "%\n";
+
+            std::cout << "  ------------------------\n";
+        }
+    }
+
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
 }
 
 void ConsoleUI::createHabitScreen() {
-    std::cout << "\n=== Create New Habit ===\n";
-    
+    std::cout << "\n------------------------\n";
+    std::cout << "    CREATE NEW HABIT     \n";
+    std::cout << "------------------------\n";
+
     std::string name;
     int typeChoice;
     int target = 1;
-    
+    std::string unit;
+
     std::cout << "Enter habit name: ";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getline(std::cin, name);
-    
-    std::cout << "Habit type:\n";
-    std::cout << "1. Boolean (done/not done)\n";
-    std::cout << "2. Numeric (with target value)\n";
+
+    if (name.empty()) {
+        std::cout << "Habit name cannot be empty\n";
+        std::cout << "\nPress Enter to continue...";
+        std::cin.get();
+        return;
+    }
+
+    std::cout << "\nHabit type:\n";
+    std::cout << "  1. Boolean (done/not done)\n";
+    std::cout << "  2. Numeric (with target value)\n";
     std::cout << "Choice: ";
     std::cin >> typeChoice;
-    
-    HabitType type;
-    if (typeChoice == 1) {
-        type = HabitType::Boolean;
-    } else {
-        type = HabitType::Numeric;
-        std::cout << "Enter target value: ";
-        std::cin >> target;
+
+    try {
+        if (typeChoice == 1) {
+            m_tracker->createHabit(name, HabitType::Boolean);
+            std::cout << "Boolean habit created!\n";
+
+        } else if (typeChoice == 2) {
+            std::cout << "Enter target value: ";
+            std::cin >> target;
+
+            if (target <= 0) {
+                std::cout << "Target must be positive\n";
+                std::cout << "\nPress Enter to continue...";
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cin.get();
+                return;
+            }
+
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            std::cout << "Enter unit (e.g., km, liters, pages): ";
+            std::getline(std::cin, unit);
+
+            m_tracker->createHabit(name, HabitType::Numeric, target, unit);
+            std::cout << "Numeric habit '" << name << "' created successfully!\n";
+            std::cout << "   Goal: " << target << " " << unit << "\n";
+        }
+    } catch (const std::exception& e) {
+        std::cout << "Error: " << e.what() << "\n";
     }
-    
-    m_tracker->createHabit(name, type, target);
-    std::cout << "Habit created successfully!\n";
-    
+
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
 }
-
 void ConsoleUI::markHabitScreen() {
-    std::cout << "\n=== Mark Habit Completed ===\n";
-    
+    std::cout << "\n    Mark Habit Completed    \n";
+
     int habitId;
     int value = 1;
-    
+
     std::cout << "Enter habit ID: ";
     std::cin >> habitId;
-    
+
     std::cout << "Enter value (for numeric habits): ";
     std::cin >> value;
-    
+
     try {
         m_tracker->markHabitCompleted(habitId, value);
-        std::cout << "Progress recorded!\n";
+        std::cout << "Progress recorded\n";
     } catch (const std::exception& e) {
         std::cout << "Error: " << e.what() << "\n";
     }
-    
+
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
 }
 
 void ConsoleUI::showStatisticsScreen() {
-    std::cout << "\n=== Statistics ===\n";
-    
-    int habitId;
-    std::cout << "Enter habit ID: ";
-    std::cin >> habitId;
-    
-    int streak = m_tracker->getCurrentStreak(habitId);
-    double rate = m_tracker->getCompletionRate(habitId, 7);
-    
-    std::cout << "Current streak: " << streak << " days\n";
-    std::cout << "Completion rate (7 days): " << std::fixed << std::setprecision(1) << rate << "%\n";
-    
-    showProgressBar(rate);
-    std::cout << "\n";
-    
+    std::cout << "\n------------------------\n";
+    std::cout << "       STATISTICS        \n";
+    std::cout << "------------------------\n";
+
+    auto& habits = m_tracker->getHabits();
+
+    if (habits.empty()) {
+        std::cout << "No habits yet. Create one first.\n";
+    } else {
+        std::cout << "\nYour habits:\n";
+        for (const auto& habit : habits) {
+            std::cout << "  ID " << habit->getId() << ": " << habit->getName()
+                      << " (" << habit->getType() << ")\n";
+        }
+
+        std::cout << "\nEnter habit ID: ";
+        int habitId;
+        std::cin >> habitId;
+
+        bool found = false;
+        for (const auto& habit : habits) {
+            if (habit->getId() == habitId) {
+                found = true;
+
+                int streak = m_tracker->getCurrentStreak(habitId);
+                double rate = m_tracker->getCompletionRate(habitId, 7);
+
+                std::cout << "\nStatistics for: " << habit->getName() << "\n";
+                std::cout << "Current streak: " << streak << " days\n";
+                std::cout << "Completion rate (7 days): " << std::fixed
+                          << std::setprecision(1) << rate << "%\n";
+
+                showProgressBar(rate);
+
+                std::cout << "\nLast 7 days: ";
+                const auto& history = habit->getHistory();
+                int start = history.size() > 7 ? history.size() - 7 : 0;
+                for (size_t i = start; i < history.size(); ++i) {
+                    std::cout << (history[i] ? "1 " : "0 ");
+                }
+                std::cout << "\n";
+
+                break;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Habit with ID " << habitId << " not found.\n";
+        }
+    }
+
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
