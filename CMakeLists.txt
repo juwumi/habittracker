@@ -9,15 +9,17 @@ include_directories(include)
 
 add_executable(habit_tracker
         src/main.cpp
-        include/dailylog.h
         src/dailylog.cpp
-        src/main.cpp
-        include/storage.h
         src/storage.cpp
-        include/logmanager.h
         src/logmanager.cpp
-        src/main.cpp
+        src/habit.cpp
+        src/booleanHabit.cpp
+        src/numericHabit.cpp
+        src/HabitTracker.cpp
+        src/ConsoleUI.cpp
+        src/Statistics.cpp
 )
+
 include(FetchContent)
 FetchContent_Declare(
         googletest
@@ -27,7 +29,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-
 add_executable(tests
         tests/tests.cpp
         src/habit.cpp
@@ -36,12 +37,10 @@ add_executable(tests
         src/dailylog.cpp
         src/storage.cpp
         src/logmanager.cpp
+        src/Statistics.cpp
+        src/HabitTracker.cpp
 )
-
-target_link_libraries(tests
-        GTest::gtest_main
-)
-
+target_link_libraries(tests GTest::gtest_main)
 target_include_directories(tests PRIVATE include)
 
 include(GoogleTest)

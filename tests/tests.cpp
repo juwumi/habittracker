@@ -6,13 +6,11 @@
 #include "../include/dailylog.h"
 #include "../include/storage.h"
 #include "../include/logmanager.h"
-#include "Statistics.h"
+#include "../include/Statistics.h"
+#include "../include/HabitTracker.h"
 #include <chrono>
 #include <map>
 #include <vector>
-#include "HabitTracker.h"
-#include "storage.h"
-#include "dailylog.h"
 
 // тесты для habit
 TEST(HabitTest, UniqueID) {
@@ -334,10 +332,6 @@ int main(int argc, char **argv) {
 
 // ТЕСТЫ ДЛЯ STATISTICS
 
-#include "Statistics.h"
-#include <chrono>
-#include <map>
-#include <vector>
 
 using namespace std::chrono;
 
@@ -382,15 +376,12 @@ TEST(StatisticsTest, GetWeight_ReturnsCorrectValue) {
 
 // ТЕСТЫ ДЛЯ HABITTRACKER
 
-#include "HabitTracker.h"
-#include "storage.h"
-#include "dailylog.h"
 
 class HabitTrackerTest : public ::testing::Test {
 protected:
     void SetUp() override {
         storage = std::make_unique<Storage>("test_habits.txt");
-        logManager = std::make_unique<DailyLog>();
+        logManager = std::make_unique<DailyLog>("2026-03-12");
         statistics = std::make_unique<Statistics>();
         
         tracker = std::make_unique<HabitTracker>(

@@ -20,7 +20,7 @@ int main() {
         auto storage = std::make_unique<Storage>("habits_data.txt");
         
         std::cout << "Initializing daily logs...\n";
-        auto logManager = std::make_unique<DailyLog>();
+        auto logManager = std::make_unique<DailyLog>("2026-03-12");
         
         std::cout << "Initializing statistics...\n";
         auto statistics = std::make_unique<Statistics>();

@@ -13,7 +13,7 @@ std::string booleanHabit::toString() const {
     }
 
     std::string goalType= goal ? "(should do)" : "(should avoid)";
-    return getName() + " | streak: " + std::to_string(getStreak()) + " | last day: " + last;
+    return getName() + " " + goalType + " | streak: " + std::to_string(getStreak()) + " | last day: " + last;
 }
 
 

@@ -2,15 +2,18 @@
 #define HABITTRACKER_H
 
 #include "Types.h"
+#include "Types.h"
+#include "habit.h"
+#include "booleanHabit.h"
+#include "numericHabit.h"
+#include "storage.h"
+#include "dailylog.h"
+#include "Statistics.h"
 #include <memory>
 #include <vector>
 #include <string>
 #include <optional>
 
-class Habit;
-class Storage;
-class DailyLog;
-class Statistics;
 
 class HabitTracker {
 public:
@@ -27,7 +30,7 @@ public:
 
     void createHabit(const std::string& name, HabitType type, int target = 1);
     bool deleteHabit(int habitId);
-    std::optional<Habit*> findHabit(int habitId);
+    std::optional<habit*> findHabit(int habitId);
     void markHabitCompleted(int habitId, int value = 1);
     
     int getCurrentStreak(int habitId) const;
@@ -40,7 +43,7 @@ private:
     std::unique_ptr<Storage> m_storage;
     std::unique_ptr<DailyLog> m_logManager;
     std::unique_ptr<Statistics> m_statistics;
-    std::vector<std::unique_ptr<Habit>> m_habits;
+    std::vector<std::unique_ptr<habit>> m_habits;
 };
 
 #endif

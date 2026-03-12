@@ -6,6 +6,9 @@
 #include <iostream>
 #include <stdexcept>
 #include <memory>
+#include "habit.h"
+#include "booleanHabit.h"
+#include "numericHabit.h"
 HabitTracker::HabitTracker(std::unique_ptr<Storage> storage,
                            std::unique_ptr<DailyLog> logManager,
                            std::unique_ptr<Statistics> statistics)
@@ -26,7 +29,7 @@ bool HabitTracker::deleteHabit(int habitId) {
     return false;
 }
 
-std::optional<Habit*> HabitTracker::findHabit(int habitId) {
+std::optional<habit*> HabitTracker::findHabit(int habitId) {
     return std::nullopt;
 }
 

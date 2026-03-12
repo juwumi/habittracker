@@ -23,7 +23,7 @@ std::optional<double> numericHabit::getProgress() const {
 
 std::string numericHabit::toString() const {
     std::string status=isGoalReached()?"reached":"not reached";
-    return getName()+ "| goal: " + std::to_string(goal) + " " + unit + " | now: " + std::to_string(currentValue) + " " + unit + " |  " + status;
+    return getName() + "| goal: " + std::to_string(goal) + " " + unit + " | now: " + std::to_string(currentValue) + " " + unit + " |  " + status;
 }
 
 
