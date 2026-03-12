@@ -112,7 +112,9 @@ void ConsoleUI::displayAllHabits() {
 }
 
 void ConsoleUI::createHabitScreen() {
-    std::cout << "\n    Create New Habit   \n";
+    std::cout << "\n------------------------\n";
+    std::cout << "    CREATE NEW HABIT     \n";
+    std::cout << "------------------------\n";
 
     std::string name;
     int typeChoice;
@@ -171,7 +173,6 @@ void ConsoleUI::createHabitScreen() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get();
 }
-
 void ConsoleUI::markHabitScreen() {
     std::cout << "\n    Mark Habit Completed    \n";
 
@@ -197,20 +198,56 @@ void ConsoleUI::markHabitScreen() {
 }
 
 void ConsoleUI::showStatisticsScreen() {
-    std::cout << "\n    Statistics    \n";
+    std::cout << "\n------------------------\n";
+    std::cout << "       STATISTICS        \n";
+    std::cout << "------------------------\n";
 
-    int habitId;
-    std::cout << "Enter habit ID: ";
-    std::cin >> habitId;
+    auto& habits = m_tracker->getHabits();
 
-    int streak = m_tracker->getCurrentStreak(habitId);
-    double rate = m_tracker->getCompletionRate(habitId, 7);
+    if (habits.empty()) {
+        std::cout << "No habits yet. Create one first.\n";
+    } else {
+        std::cout << "\nYour habits:\n";
+        for (const auto& habit : habits) {
+            std::cout << "  ID " << habit->getId() << ": " << habit->getName()
+                      << " (" << habit->getType() << ")\n";
+        }
 
-    std::cout << "Current streak: " << streak << " days\n";
-    std::cout << "Completion rate (7 days): " << std::fixed << std::setprecision(1) << rate << "%\n";
+        std::cout << "\nEnter habit ID: ";
+        int habitId;
+        std::cin >> habitId;
 
-    showProgressBar(rate);
-    std::cout << "\n";
+        bool found = false;
+        for (const auto& habit : habits) {
+            if (habit->getId() == habitId) {
+                found = true;
+
+                int streak = m_tracker->getCurrentStreak(habitId);
+                double rate = m_tracker->getCompletionRate(habitId, 7);
+
+                std::cout << "\nStatistics for: " << habit->getName() << "\n";
+                std::cout << "Current streak: " << streak << " days\n";
+                std::cout << "Completion rate (7 days): " << std::fixed
+                          << std::setprecision(1) << rate << "%\n";
+
+                showProgressBar(rate);
+
+                std::cout << "\nLast 7 days: ";
+                const auto& history = habit->getHistory();
+                int start = history.size() > 7 ? history.size() - 7 : 0;
+                for (size_t i = start; i < history.size(); ++i) {
+                    std::cout << (history[i] ? "1 " : "0 ");
+                }
+                std::cout << "\n";
+
+                break;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Habit with ID " << habitId << " not found.\n";
+        }
+    }
 
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
