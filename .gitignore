@@ -37,9 +37,18 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
-".idea/" 
-"*.iml" 
-".idea/" 
-"*.iml" 
+
+# IDE files
+.idea/
+*.iml
+
+# CMake build folders
+build/
+cmake-build-debug/
+cmake-build-release/
+
+# System files
+.DS_Store
+Thumbs.db
